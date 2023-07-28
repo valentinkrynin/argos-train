@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import stanza
+import sentencepiece
 
 import argostrain
 import argostrain.opennmtutils
@@ -143,17 +144,18 @@ def train(
                 combined.write(line)
 
     # TODO: Don't hardcode vocab_size and set user_defined_symbols
-    subprocess.run(
-        [
-            "spm_train",
-            "--input=run/split_data/all.txt",
-            "--model_prefix=run/sentencepiece",
-            "--vocab_size=50000",
-            "--character_coverage=0.9995",
-            "--input_sentence_size=1000000",
-            "--shuffle_input_sentence=true",
-        ]
-    )
+    # subprocess.run(
+    #     [
+    #         "spm_train",
+    #         "--input=run/split_data/all.txt",
+    #         "--model_prefix=run/sentencepiece",
+    #         "--vocab_size=50000",
+    #         "--character_coverage=0.9995",
+    #         "--input_sentence_size=1000000",
+    #         "--shuffle_input_sentence=true",
+    #     ]
+    # )
+    sentencepiece.SentencePieceTrainer.train(input="run/split_data/all.txt", model_prefix="run/sentencepiece", vocab_size=50000, character_coverage=0.9995, input_sentence_size=1000000, shuffle_input_sentence=True)
 
     subprocess.run(["rm", "run/split_data/all.txt"])
 
